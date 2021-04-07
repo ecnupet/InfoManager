@@ -4,7 +4,7 @@ WORKDIR /source
 EXPOSE 5000
 
 # copy csproj and restore as distinct layers
-COPY *.sln .
+COPY ../*.sln .
 COPY *.csproj .
 RUN dotnet restore -r linux-arm64
 

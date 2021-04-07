@@ -4,7 +4,7 @@ WORKDIR /source
 EXPOSE 5000
 
 # copy csproj and restore as distinct layers
-COPY ../*.sln .
+COPY *.sln .
 COPY *.csproj .
 RUN dotnet restore -r linux-arm64
 
@@ -20,4 +20,4 @@ COPY --from=build /app ./
 
 ENV ASPNETCORE_URLS="http://+:5000;"
 
-ENTRYPOINT ["./infoManager"]
+ENTRYPOINT ["./InfoManager"]

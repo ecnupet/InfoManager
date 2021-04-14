@@ -31,9 +31,9 @@ namespace InfoManager.Controllers
         }
 
         [HttpGet("drug")]
-        public async Task<ActionResult<ResponseResultModel<DrugData>>> DrugInfoGetAsync(string drugID)
+        public async Task<ActionResult<ResponseResultModel<Drug>>> DrugInfoGetAsync(string drugID)
         {
-            var result = await AuthCheck<DrugData>(_accessor.HttpContext.Request.Cookies);
+            var result = await AuthCheck<Drug>(_accessor.HttpContext.Request.Cookies);
             if (result.State == ResponseResultEnum.Fail)
             {
                 return result;
@@ -41,12 +41,22 @@ namespace InfoManager.Controllers
             var drugs = _context.Drugs.Where(d => d.ID == int.Parse(drugID));
             if (drugs.Count() < 1)
             {
-                return Fail(default(DrugData), "无此药品");
+                return Fail(default(Drug), "无此药品");
             }
             var drug = drugs.First();
-            var res = new DrugData { DrugName = drug.DrugName, DrugPrice = drug.DrugPrice, DrugSave = drug.DrugSave, DrugUsage = drug.DrugUsage };
-            return Success<DrugData>(res, "查询成功");
+            return Success(drug, "查询成功");
+        }
 
+        [HttpGet("drugall")]
+        public async Task<ActionResult<ResponseResultModel<List<Drug>>>> DrugAllInfoGetAsync(string drugID)
+        {
+            var result = await AuthCheck<List<Drug>>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var drugs = _context.Drugs.Select(x => x).ToList();
+            return Success(drugs, "查询成功");
         }
 
         [HttpGet("case")]

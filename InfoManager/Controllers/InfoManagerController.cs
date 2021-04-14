@@ -255,16 +255,15 @@ namespace InfoManager.Controllers
             RoomProcess roomProcess = default(RoomProcess);
             foreach (var i in processes)
             {
-                if (fatherID == 0)
+
+                roomProcess = _context.RoomProcesses.Where(rp => rp.Name == i && rp.FatherID == fatherID).FirstOrDefault();
+                if (roomProcess == null)
                 {
-                    fatherID = _context.RoomProcesses.Where(rp => rp.Name == i).Select(rp => rp.ID).FirstOrDefault();
-                    roomProcess = _context.RoomProcesses.Where(rp => rp.Name == i).FirstOrDefault();
+                    return Fail("流程路径不合法");
                 }
+                fatherID = roomProcess.ID;
             }
-            if (roomProcess == null)
-            {
-                return Fail("流程路径不合法");
-            }
+
             var checkProcess = _context.RoomProcesses.Where(rp => rp.FatherID == fatherID && rp.Name == process.Name);
             if (checkProcess.Count() != 0)
             {

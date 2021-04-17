@@ -30,65 +30,257 @@ namespace InfoManager.Controllers
             Http = httpClient;
         }
 
-        [HttpGet("drug")]
-        public async Task<ActionResult<ResponseResultModel<Drug>>> DrugInfoGetAsync(string drugID)
+        #region disease
+
+        [HttpPost("diseaseadd")] 
+        public async Task<ActionResult<ResponseResultModel<Object>>> DiseaseAddAsync(DiseasePostForm diseasePostForm)
         {
-            var result = await AuthCheck<Drug>(_accessor.HttpContext.Request.Cookies);
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
             if (result.State == ResponseResultEnum.Fail)
             {
                 return result;
             }
-            var drugs = _context.Drugs.Where(d => d.ID == int.Parse(drugID));
-            if (drugs.Count() < 1)
+            var res = _context.Diseases.Where(d => d.DiseaseName == diseasePostForm.DiseaseName).FirstOrDefault();
+            if(res!=null)
             {
-                return Fail(default(Drug), "无此药品");
+                return Fail("已存在");
             }
-            var drug = drugs.First();
-            return Success(drug, "查询成功");
+            _context.Diseases.Add(new Disease { DiseaseName = diseasePostForm.DiseaseName, DiseaseType = diseasePostForm.DiseaseType });
+            return Success("添加成功");
         }
 
-        [HttpGet("drugall")]
-        public async Task<ActionResult<ResponseResultModel<List<Drug>>>> DrugAllInfoGetAsync(string drugID)
+
+        [HttpGet("diseaseget")]
+        public async Task<ActionResult<ResponseResultModel<List<Disease>>>> DiseaseGetAsync()
         {
-            var result = await AuthCheck<List<Drug>>(_accessor.HttpContext.Request.Cookies);
+            var result = await AuthCheck<List<Disease>>(_accessor.HttpContext.Request.Cookies);
             if (result.State == ResponseResultEnum.Fail)
             {
                 return result;
             }
-            var drugs = _context.Drugs.Select(x => x).ToList();
-            return Success(drugs, "查询成功");
+            var res = _context.Diseases.Select(d => d);
+
+
+            return Success<List<Disease>>(res.ToList(), "添加成功");
         }
 
-        [HttpGet("case")]
-        public async Task<ActionResult<ResponseResultModel<Case>>> CaseInfoGetAsync(string caseName, string stage)
+        [HttpPost("diseaseupdate")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> DiseaseUpdateAsync(Disease disease)
         {
-            var result = await AuthCheck<Case>(_accessor.HttpContext.Request.Cookies);
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
             if (result.State == ResponseResultEnum.Fail)
             {
                 return result;
             }
-            var cases = _context.Cases.Where(c => c.CaseName == caseName && c.CaseStage.ToString() == stage);
-            if (cases.Count() < 1)
+            var res = _context.Diseases.Where(d => d.ID == disease.ID).FirstOrDefault();
+            if (res == null)
             {
-                return Fail(default(Case), "无此药品");
+                return Fail("不存在");
             }
+            res.DiseaseName = disease.DiseaseName;
+            res.DiseaseType = disease.DiseaseType;
+            await _context.SaveChangesAsync();
+            return Success("添加成功");
+        }
 
-            var res = cases.First();
+
+        [HttpPost("diseasedelete")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> DiseaseDeleteAsync(int diseaseID)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.Diseases.Where(d => d.ID == diseaseID).FirstOrDefault();
+            if (res == null)
+            {
+                return Fail("疾病不存在");
+            }
+            _context.Diseases.Remove(res);
+            await _context.SaveChangesAsync();
+            return Success("删除成功");
+        }
+        #endregion
+
+        #region drug
+
+        [HttpGet("drugsearch")]
+        public async Task<ActionResult<ResponseResultModel<SearchResult<Drug>>>> DrugSearchAsync(int page, int pageSize, string keyWord = "")
+        {
+            var result = await AuthCheck<SearchResult<Drug>>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var number = _context.Drugs.Where(x => x.DrugName.StartsWith(keyWord)).Count();
+            var drugs = _context.Drugs.Where(x => x.DrugName.StartsWith(keyWord)).Select(x => x).Take(page * pageSize).Skip(page * (pageSize - 1)).ToList();
+            var res = new SearchResult<Drug> { Data = drugs, Number = number };
             return Success(res, "查询成功");
         }
 
-        [HttpGet("casename")]
-        public async Task<ActionResult<ResponseResultModel<List<CaseName>>>> CaseNamesGetAsync()
+        [HttpPost("drugupdate")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> DrugUpdateAsync(Drug drug)
         {
-            var result = await AuthCheck<List<CaseName>>(_accessor.HttpContext.Request.Cookies);
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
             if (result.State == ResponseResultEnum.Fail)
             {
                 return result;
             }
-            var cases = _context.Cases.Select(c => new CaseName { Name = c.CaseName, CaseType = c.CaseType }).Distinct().ToList();
-            return Success(cases, "查询成功");
+            var res = _context.Drugs.Where(d => d.ID == drug.ID).FirstOrDefault();
+            if(res == null)
+            {
+                return Fail(default(object), "药品不存在");
+            }
+            res.DrugName = drug.DrugName;
+            res.DrugPrice = drug.DrugPrice;
+            res.DrugSave = drug.DrugSave;
+            res.DrugUsage = drug.DrugUsage;
+            await _context.SaveChangesAsync();
+            return Success("修改成功");
         }
 
+        [HttpPost("drugadd")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> DrugAddAsync(DrugPostForm drugPostForm)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.Drugs.Where(d => d.DrugName == drugPostForm.DrugName).FirstOrDefault();
+            if (res != null)
+            {
+                return Fail("药品已存在");
+            }
+            _context.Drugs.Add(new Drug {DrugName = drugPostForm.DrugName, DrugPrice = drugPostForm.DrugPrice, DrugSave = drugPostForm.DrugSave, DrugUsage = drugPostForm.DrugUsage });
+            await _context.SaveChangesAsync();
+            return Success("添加成功");
+        }
+
+        [HttpPost("drugdelete")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> DrugDeleteAsync(int drugID)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.Drugs.Where(d => d.ID == drugID).FirstOrDefault();
+            if (res == null)
+            {
+                return Fail("药品不存在");
+            }
+            _context.Drugs.Remove(res);
+            await _context.SaveChangesAsync();
+            return Success("删除成功");
+        }
+        #endregion
+
+        #region case
+
+
+        [HttpGet("diseasecase")]
+        public async Task<ActionResult<ResponseResultModel<DiseaseAllStage>>> DiseaseStageGetAsync(int diseaseID)
+        {
+            var result = await AuthCheck<DiseaseAllStage>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var cases = _context.Cases.Where(c => c.DiseaseID == diseaseID);
+            if (cases.Count() < 1)
+            {
+                return Fail(default(DiseaseAllStage), "无此药品");
+            }
+
+            var res = new DiseaseAllStage();
+            foreach(var c in cases)
+            {
+                switch(c.CaseStage)
+                {
+                    case CaseStages.Introduce:
+                        res.Introduce = c;
+                        break;
+                    case CaseStages.ClinicalReception:
+                        res.ClinicalReception = c;
+                        break;
+                    case CaseStages.Check:
+                        res.Check = c;
+                        break;
+                    case CaseStages.Diagnosis:
+                        res.Diagnosis = c;
+                        break;
+                    case CaseStages.TherapeuticSchedule:
+                        res.TherapeuticSchedule = c;
+                        break;
+                }
+            }
+            return Success(res, "查询成功");
+        }
+
+
+        [HttpPost("caseupdate")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> CaseUpdateAsync(Case cases)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.Cases.Where(d => d.ID == cases.ID).FirstOrDefault();
+            if (res == null)
+            {
+                return Fail(default(object), "病例不存在");
+            }
+            res.DiseaseID = cases.DiseaseID;
+            res.CaseStage = cases.CaseStage;
+            res.CaseType = cases.CaseType;
+            res.Description = cases.Description;
+            res.Image = cases.Image;
+            res.Video = cases.Video;
+            await _context.SaveChangesAsync();
+            return Success("修改成功");
+        }
+
+        [HttpPost("caseadd")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> CaseAddAsync(CaseForm cases)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.Cases.Where(d => d.DiseaseID == cases.DiseaseID && d.CaseStage == cases.CaseStage).FirstOrDefault();
+            if (res != null)
+            {
+                return Fail("病例已存在");
+            }
+            _context.Cases.Add(new Case { Image = cases.Image, Video = cases.Video, DiseaseID = cases.DiseaseID, CaseStage = cases.CaseStage, CaseType = cases.CaseType, Description = cases.Description });
+            await _context.SaveChangesAsync();
+            return Success("添加成功");
+        }
+
+        [HttpPost("casedelete")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> CaseDeleteAsync(int caseID)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.Cases.Where(d => d.ID == caseID).FirstOrDefault();
+            if (res == null)
+            {
+                return Fail("病例不存在");
+            }
+            _context.Cases.Remove(res);
+            await _context.SaveChangesAsync();
+            return Success("删除成功");
+        }
+        #endregion
+
+        #region process
         [HttpGet("process")]
         public async Task<ActionResult<ResponseResultModel<RoomProcess>>> ProcessGet(string processRoute)
         {
@@ -119,113 +311,7 @@ namespace InfoManager.Controllers
             return Success(roomProcess, "查询成功");
         }
 
-        [HttpGet("chargeprojectnames")]
-        public async Task<ActionResult<ResponseResultModel<List<string>>>> ChargeProjectNamesGetAsync()
-        {
-            var result = await AuthCheck<List<string>>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
-            {
-                return result;
-            }
-            var res = _context.ChargeProjects.Select(cp => cp.ProjectName).ToList();
-            return Success(res, "查询成功");
-        }
 
-
-
-        [HttpGet("chargeproject")]
-        public async Task<ActionResult<ResponseResultModel<ChargeProject>>> ChargeProjectGetAsync(string projectName)
-        {
-            var result = await AuthCheck<ChargeProject>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
-            {
-                return result;
-            }
-            var res = _context.ChargeProjects.Where(cp => cp.ProjectCharge == projectName).FirstOrDefault();
-            if(res == null)
-            {
-                return Fail(default(ChargeProject), "项目不存在");
-            }
-            return Success(res, "查询成功");
-        }
-
-        [HttpPost("drugupdate")]
-        public async Task<ActionResult<ResponseResultModel<Object>>> DrugUpdateAsync(Drug drug)
-        {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
-            {
-                return result;
-            }
-            var res = _context.Drugs.Where(d => d.ID == drug.ID).FirstOrDefault();
-            if(res == null)
-            {
-                return Fail(default(object), "药品不存在");
-            }
-            res.DrugName = drug.DrugName;
-            res.DrugPrice = drug.DrugPrice;
-            res.DrugSave = drug.DrugSave;
-            res.DrugUsage = drug.DrugUsage;
-            await _context.SaveChangesAsync();
-            return Success("修改成功");
-        }
-        [HttpPost("drugadd")]
-        public async Task<ActionResult<ResponseResultModel<Object>>> DrugAddAsync(DrugPostForm drugPostForm)
-        {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
-            {
-                return result;
-            }
-            var res = _context.Drugs.Where(d => d.DrugName == drugPostForm.DrugName).FirstOrDefault();
-            if (res != null)
-            {
-                return Fail("药品已存在");
-            }
-            _context.Drugs.Add(new Drug {DrugName = drugPostForm.DrugName, DrugPrice = drugPostForm.DrugPrice, DrugSave = drugPostForm.DrugSave, DrugUsage = drugPostForm.DrugUsage });
-            await _context.SaveChangesAsync();
-            return Success("添加成功");
-        }
-
-        [HttpPost("caseupdate")]
-        public async Task<ActionResult<ResponseResultModel<Object>>> CaseUpdateAsync(Case cases)
-        {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
-            {
-                return result;
-            }
-            var res = _context.Cases.Where(d => d.ID == cases.ID).FirstOrDefault();
-            if (res == null)
-            {
-                return Fail(default(object), "病例不存在");
-            }
-            res.CaseName = cases.CaseName;
-            res.CaseStage = cases.CaseStage;
-            res.CaseType = cases.CaseType;
-            res.Description = cases.Description;
-            res.Image = cases.Image;
-            res.Video = cases.Video;
-            await _context.SaveChangesAsync();
-            return Success("修改成功");
-        }
-        [HttpPost("caseadd")]
-        public async Task<ActionResult<ResponseResultModel<Object>>> CaseAddAsync(CaseForm cases)
-        {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
-            {
-                return result;
-            }
-            var res = _context.Cases.Where(d => d.CaseName == cases.CaseName && d.CaseStage == cases.CaseStage).FirstOrDefault();
-            if (res != null)
-            {
-                return Fail("病例已存在");
-            }
-            _context.Cases.Add(new Case {Image = cases.Image, Video = cases.Video, CaseName = cases.CaseName, CaseStage = cases.CaseStage, CaseType = cases.CaseType, Description =cases.Description });
-            await _context.SaveChangesAsync();
-            return Success("添加成功");
-        }
 
         [HttpPost("processupdate")]
         public async Task<ActionResult<ResponseResultModel<Object>>> ProcessUpdateAsync(RoomProcess process)
@@ -285,6 +371,9 @@ namespace InfoManager.Controllers
             return Success("添加成功");
         }
 
+        #endregion
+
+        #region chargeproject
         [HttpPost("chargeprojectupdate")]
         public async Task<ActionResult<ResponseResultModel<Object>>> ChargeProjectUpdateAsync(ChargeProject chargeProject)
         {
@@ -304,6 +393,7 @@ namespace InfoManager.Controllers
             await _context.SaveChangesAsync();
             return Success("修改成功");
         }
+
         [HttpPost("chargeProjectadd")]
         public async Task<ActionResult<ResponseResultModel<Object>>> ChargeProjectAddAsync(ChargeProjectForm charge)
         {
@@ -322,6 +412,20 @@ namespace InfoManager.Controllers
             return Success("添加成功");
         }
 
+        [HttpGet("chargeprojectsearch")]
+        public async Task<ActionResult<ResponseResultModel<SearchResult<ChargeProject>>>> ChargeProjectSearchAsync(int page, int pageSize, string keyWord)
+        {
+            var result = await AuthCheck<SearchResult<ChargeProject>>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var number = _context.ChargeProjects.Where(x => x.ProjectName.StartsWith(keyWord)).Count();
+            var chargeProjects = _context.ChargeProjects.Where(x => x.ProjectName.StartsWith(keyWord)).Select(x => x).Take(page * pageSize).Skip(page * (pageSize - 1)).ToList();
+            var res = new SearchResult<ChargeProject> { Data = chargeProjects, Number = number };
+            return Success(res, "查询成功");
+        }
+        #endregion
 
         [NonAction]
         public async Task<ResponseResultModel<T>> AuthCheck<T>(IRequestCookieCollection cookies)

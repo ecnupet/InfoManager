@@ -36,8 +36,8 @@ namespace InfoManager.Model
         [Key]
         [Column("id")]
         public int ID { get; set; }
-        [Column("case_name")]
-        public string CaseName { get; set; }
+        [Column("disease_id")]
+        public int DiseaseID { get; set; }
         [Column("stage")]
         public CaseStages CaseStage { get; set; }
         [Column("description")]

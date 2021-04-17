@@ -15,6 +15,7 @@ namespace InfoManager.Model
         public DbSet<RoomProcess> RoomProcesses { get; set; }
         public DbSet<Drug> Drugs { get; set; }
         public DbSet<Case> Cases { get; set; }
+        public DbSet<Disease> Diseases { get; set; }
         public DbSet<ChargeProject> ChargeProjects { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

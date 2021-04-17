@@ -36,7 +36,7 @@ namespace InfoManager.Model
     public class CaseForm
     {
 
-        public string CaseName { get; set; }
+        public int DiseaseID { get; set; }
         public CaseStages CaseStage { get; set; }
         public string Description { get; set; }
         public string Image { get; set; }
@@ -56,4 +56,19 @@ namespace InfoManager.Model
         public string Name { get; set; }
         public bool Message { get; set; }
     }
+    
+    public class DiseaseAllStage
+    {
+        public Case Introduce { get; set; }
+        public Case ClinicalReception { get; set; }
+        public Case Check { get; set; }
+        public Case Diagnosis { get; set; }
+        public Case TherapeuticSchedule { get; set; }
+    }
+    public class DiseasePostForm
+    {
+        public string DiseaseName { get; set; }
+        public DType DiseaseType { get; set; }
+    }
+
 }

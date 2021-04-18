@@ -105,16 +105,16 @@ namespace InfoManager.Controllers
 
         #region drug
 
-        [HttpGet("drugsearch")]
-        public async Task<ActionResult<ResponseResultModel<SearchResult<Drug>>>> DrugSearchAsync(int page, int pageSize, string keyWord = "")
+        [HttpGet("drug")]
+        public async Task<ActionResult<ResponseResultModel<SearchResult<Drug>>>> DrugSearchAsync(int page, int pageSize, string keyword = "")
         {
             var result = await AuthCheck<SearchResult<Drug>>(_accessor.HttpContext.Request.Cookies);
             if (result.State == ResponseResultEnum.Fail)
             {
                 return result;
             }
-            var number = _context.Drugs.Where(x => x.DrugName.StartsWith(keyWord)).Count();
-            var drugs = _context.Drugs.Where(x => x.DrugName.StartsWith(keyWord)).Select(x => x).Take(page * pageSize).Skip(page * (pageSize - 1)).ToList();
+            var number = _context.Drugs.Where(x => x.DrugName.StartsWith(keyword)).Count();
+            var drugs = _context.Drugs.Where(x => x.DrugName.StartsWith(keyword)).Select(x => x).Take(page * pageSize).Skip(page * (pageSize - 1)).ToList();
             var res = new SearchResult<Drug> { Data = drugs, Number = number };
             return Success(res, "查询成功");
         }

@@ -21,8 +21,8 @@ namespace InfoManager.Response
     }
     public class SearchResult<T>
     {
-        public int Number { get; set; }
-        public List<T> Data { get; set; }
+        public int Count { get; set; }
+        public List<T> Records { get; set; }
     }
 
 }

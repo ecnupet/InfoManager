@@ -71,4 +71,8 @@ namespace InfoManager.Model
         public DType DiseaseType { get; set; }
     }
 
+    public class DeleteForm
+    {
+        public int ID { get; set; }
+    }
 }

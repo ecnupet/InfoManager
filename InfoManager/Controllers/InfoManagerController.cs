@@ -85,14 +85,14 @@ namespace InfoManager.Controllers
 
 
         [HttpPost("diseasedelete")]
-        public async Task<ActionResult<ResponseResultModel<Object>>> DiseaseDeleteAsync(int diseaseID)
+        public async Task<ActionResult<ResponseResultModel<Object>>> DiseaseDeleteAsync(DeleteForm delete)
         {
             var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
             if (result.State == ResponseResultEnum.Fail)
             {
                 return result;
             }
-            var res = _context.Diseases.Where(d => d.ID == diseaseID).FirstOrDefault();
+            var res = _context.Diseases.Where(d => d.ID == delete.ID).FirstOrDefault();
             if (res == null)
             {
                 return Fail("疾病不存在");
@@ -106,7 +106,7 @@ namespace InfoManager.Controllers
         #region drug
 
         [HttpGet("drug")]
-        public async Task<ActionResult<ResponseResultModel<SearchResult<Drug>>>> DrugSearchAsync(int page, int pageSize, string keyword = "")
+        public async Task<ActionResult<ResponseResultModel<SearchResult<Drug>>>> DrugSearchAsync(int page, int pageSize, string keyword)
         {
             var result = await AuthCheck<SearchResult<Drug>>(_accessor.HttpContext.Request.Cookies);
             if (result.State == ResponseResultEnum.Fail)
@@ -160,14 +160,14 @@ namespace InfoManager.Controllers
         }
 
         [HttpPost("drugdelete")]
-        public async Task<ActionResult<ResponseResultModel<Object>>> DrugDeleteAsync(int drugID)
+        public async Task<ActionResult<ResponseResultModel<Object>>> DrugDeleteAsync(DeleteForm deleteForm)
         {
             var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
             if (result.State == ResponseResultEnum.Fail)
             {
                 return result;
             }
-            var res = _context.Drugs.Where(d => d.ID == drugID).FirstOrDefault();
+            var res = _context.Drugs.Where(d => d.ID == deleteForm.ID).FirstOrDefault();
             if (res == null)
             {
                 return Fail("药品不存在");
@@ -264,14 +264,14 @@ namespace InfoManager.Controllers
         }
 
         [HttpPost("casedelete")]
-        public async Task<ActionResult<ResponseResultModel<Object>>> CaseDeleteAsync(int caseID)
+        public async Task<ActionResult<ResponseResultModel<Object>>> CaseDeleteAsync(DeleteForm delete)
         {
             var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
             if (result.State == ResponseResultEnum.Fail)
             {
                 return result;
             }
-            var res = _context.Cases.Where(d => d.ID == caseID).FirstOrDefault();
+            var res = _context.Cases.Where(d => d.ID == delete.ID).FirstOrDefault();
             if (res == null)
             {
                 return Fail("病例不存在");
@@ -313,7 +313,23 @@ namespace InfoManager.Controllers
             return Success(roomProcess, "查询成功");
         }
 
-
+        [HttpPost("processdelete")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> ProcessDeleteAsync(DeleteForm delete)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.RoomProcesses.Where(d => d.ID == delete.ID).FirstOrDefault();
+            if (res == null)
+            {
+                return Fail("病例不存在");
+            }
+            _context.RoomProcesses.Remove(res);
+            await _context.SaveChangesAsync();
+            return Success("删除成功");
+        }
 
         [HttpPost("processupdate")]
         public async Task<ActionResult<ResponseResultModel<Object>>> ProcessUpdateAsync(RoomProcess process)
@@ -395,7 +411,23 @@ namespace InfoManager.Controllers
             await _context.SaveChangesAsync();
             return Success("修改成功");
         }
-
+        [HttpPost("chargeprojectdelete")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> ChargeProjectDeleteAsync(DeleteForm delete)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.ChargeProjects.Where(d => d.ID == delete.ID).FirstOrDefault();
+            if (res == null)
+            {
+                return Fail("病例不存在");
+            }
+            _context.ChargeProjects.Remove(res);
+            await _context.SaveChangesAsync();
+            return Success("删除成功");
+        }
         [HttpPost("chargeProjectadd")]
         public async Task<ActionResult<ResponseResultModel<Object>>> ChargeProjectAddAsync(ChargeProjectForm charge)
         {

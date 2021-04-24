@@ -192,12 +192,12 @@ namespace InfoManager.Controllers
                 return result;
             }
             var cases = _context.Cases.Where(c => c.DiseaseID == diseaseID);
+            var res = new DiseaseAllStage();
             if (cases.Count() < 1)
             {
-                return Fail(default(DiseaseAllStage), "无此药品");
+                return Success(res, "查询成功");
             }
 
-            var res = new DiseaseAllStage();
             foreach(var c in cases)
             {
                 switch(c.CaseStage)

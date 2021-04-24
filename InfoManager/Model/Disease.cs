@@ -7,12 +7,6 @@ using System.Threading.Tasks;
 
 namespace InfoManager.Model
 {
-    public enum DType
-    {
-        InfectiousDisease,
-        ParasiticDisease
-
-    }
 
 
     [Table("disease")]
@@ -24,7 +18,6 @@ namespace InfoManager.Model
         [Column("disease_name")]
         public string DiseaseName { get; set; }
         [Column("disease_type")]
-        public DType DiseaseType { get; set; }
-
+        public string DiseaseType { get; set; }
     }
 }

@@ -46,6 +46,7 @@ namespace InfoManager.Controllers
                 return Fail("已存在");
             }
             _context.Diseases.Add(new Disease { DiseaseName = diseasePostForm.DiseaseName, DiseaseType = diseasePostForm.DiseaseType });
+            await _context.SaveChangesAsync();
             return Success("添加成功");
         }
 
@@ -237,7 +238,6 @@ namespace InfoManager.Controllers
             }
             res.DiseaseID = cases.DiseaseID;
             res.CaseStage = cases.CaseStage;
-            res.CaseType = cases.CaseType;
             res.Description = cases.Description;
             res.Image = cases.Image;
             res.Video = cases.Video;
@@ -258,7 +258,7 @@ namespace InfoManager.Controllers
             {
                 return Fail("病例已存在");
             }
-            _context.Cases.Add(new Case { Image = cases.Image, Video = cases.Video, DiseaseID = cases.DiseaseID, CaseStage = cases.CaseStage, CaseType = cases.CaseType, Description = cases.Description });
+            _context.Cases.Add(new Case { Image = cases.Image, Video = cases.Video, DiseaseID = cases.DiseaseID, CaseStage = cases.CaseStage, Description = cases.Description });
             await _context.SaveChangesAsync();
             return Success("添加成功");
         }
@@ -475,7 +475,7 @@ namespace InfoManager.Controllers
             var requestMessage = new HttpRequestMessage()
             {
                 Method = new HttpMethod("GET"),
-                RequestUri = new Uri($"https://backend.ecnu.space/api/pm/auth/check")
+                RequestUri = new Uri($"http://pm-app-svc.backend:5000/api/pm/auth/check")
             };
             requestMessage.Headers.Add("cookie", cookieString);
             var response = await Http.SendAsync(requestMessage);

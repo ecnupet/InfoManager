@@ -46,7 +46,6 @@ namespace InfoManager.Model
         public string Image { get; set; }
         [Column("video")]
         public string Video { get; set; }
-        [Column("case_type")]
-        public string CaseType { get; set; }
+
     }
 }

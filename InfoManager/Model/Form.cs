@@ -68,7 +68,7 @@ namespace InfoManager.Model
     public class DiseasePostForm
     {
         public string DiseaseName { get; set; }
-        public DType DiseaseType { get; set; }
+        public string DiseaseType { get; set; }
     }
 
     public class DeleteForm

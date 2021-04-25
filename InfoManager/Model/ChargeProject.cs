@@ -18,6 +18,6 @@ namespace InfoManager.Model
         [Column("projectdescription")]
         public string ProjectDescription { get; set; }
         [Column("projectcharge")]
-        public string ProjectCharge { get; set; }
+        public int ProjectCharge { get; set; }
     }
 }

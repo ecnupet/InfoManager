@@ -47,7 +47,7 @@ namespace InfoManager.Model
     {
         public string ProjectName { get; set; }
         public string ProjectDescription { get; set; }
-        public string ProjectCharge { get; set; }
+        public int ProjectCharge { get; set; }
     }
     public class AuthCheckResponse
     {

@@ -456,7 +456,7 @@ namespace InfoManager.Controllers
             }
             var key = keyWord ?? "";
             var number = _context.ChargeProjects.Where(x => x.ProjectName.StartsWith(key)).Count();
-            var chargeProjects = _context.ChargeProjects.Where(x => x.ProjectName.StartsWith(key)).Select(x => x).Take(page * pageSize).Skip(page * (pageSize - 1)).ToList();
+            var chargeProjects = _context.ChargeProjects.Where(x => x.ProjectName.StartsWith(key)).Select(x => x).Take(page * pageSize).Skip((page - 1) * pageSize).ToList();
             var res = new SearchResult<ChargeProject> { Records = chargeProjects, Count = number };
             return Success(res, "查询成功");
         }

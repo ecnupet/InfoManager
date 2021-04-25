@@ -71,7 +71,7 @@ namespace InfoManager.Model
     }
     public class AuthCheckResponse
     {
-        public string IsAdmin { get; set; }
+        public string Authorization { get; set; }
         public string ID { get; set; }
         public string Name { get; set; }
         public bool Message { get; set; }

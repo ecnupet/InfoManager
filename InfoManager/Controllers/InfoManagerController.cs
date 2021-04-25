@@ -35,15 +35,15 @@ namespace InfoManager.Controllers
         [HttpPost("diseaseadd")] 
         public async Task<ActionResult<ResponseResultModel<Object>>> DiseaseAddAsync(DiseasePostForm diseasePostForm)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
             var res = _context.Diseases.Where(d => d.DiseaseName == diseasePostForm.DiseaseName).FirstOrDefault();
             if(res!=null)
             {
-                return Fail("已存在");
+                return Fail("疾病已存在");
             }
             _context.Diseases.Add(new Disease { DiseaseName = diseasePostForm.DiseaseName, DiseaseType = diseasePostForm.DiseaseType });
             await _context.SaveChangesAsync();
@@ -55,7 +55,7 @@ namespace InfoManager.Controllers
         public async Task<ActionResult<ResponseResultModel<List<Disease>>>> DiseaseGetAsync()
         {
             var result = await AuthCheck<List<Disease>>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -68,15 +68,15 @@ namespace InfoManager.Controllers
         [HttpPost("diseaseupdate")]
         public async Task<ActionResult<ResponseResultModel<Object>>> DiseaseUpdateAsync(Disease disease)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
             var res = _context.Diseases.Where(d => d.ID == disease.ID).FirstOrDefault();
             if (res == null)
             {
-                return Fail("不存在");
+                return Fail("疾病不存在");
             }
             res.DiseaseName = disease.DiseaseName;
             res.DiseaseType = disease.DiseaseType;
@@ -88,8 +88,8 @@ namespace InfoManager.Controllers
         [HttpPost("diseasedelete")]
         public async Task<ActionResult<ResponseResultModel<Object>>> DiseaseDeleteAsync(DeleteForm delete)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -110,7 +110,7 @@ namespace InfoManager.Controllers
         public async Task<ActionResult<ResponseResultModel<SearchResult<Drug>>>> DrugSearchAsync(int page, int pageSize, string keyword)
         {
             var result = await AuthCheck<SearchResult<Drug>>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -124,8 +124,8 @@ namespace InfoManager.Controllers
         [HttpPost("drugupdate")]
         public async Task<ActionResult<ResponseResultModel<Object>>> DrugUpdateAsync(Drug drug)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -145,8 +145,8 @@ namespace InfoManager.Controllers
         [HttpPost("drugadd")]
         public async Task<ActionResult<ResponseResultModel<Object>>> DrugAddAsync(DrugPostForm drugPostForm)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -163,8 +163,8 @@ namespace InfoManager.Controllers
         [HttpPost("drugdelete")]
         public async Task<ActionResult<ResponseResultModel<Object>>> DrugDeleteAsync(DeleteForm deleteForm)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -187,7 +187,7 @@ namespace InfoManager.Controllers
         public async Task<ActionResult<ResponseResultModel<DiseaseAllStage>>> DiseaseStageGetAsync(int diseaseID)
         {
             var result = await AuthCheck<DiseaseAllStage>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -226,8 +226,8 @@ namespace InfoManager.Controllers
         [HttpPost("caseupdate")]
         public async Task<ActionResult<ResponseResultModel<Object>>> CaseUpdateAsync(Case cases)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -248,8 +248,8 @@ namespace InfoManager.Controllers
         [HttpPost("caseadd")]
         public async Task<ActionResult<ResponseResultModel<Object>>> CaseAddAsync(CaseForm cases)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -266,8 +266,8 @@ namespace InfoManager.Controllers
         [HttpPost("casedelete")]
         public async Task<ActionResult<ResponseResultModel<Object>>> CaseDeleteAsync(DeleteForm delete)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -287,7 +287,7 @@ namespace InfoManager.Controllers
         public async Task<ActionResult<ResponseResultModel<RoomProcess>>> ProcessGet(string processRoute)
         {
             var result = await AuthCheck<RoomProcess>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -316,15 +316,15 @@ namespace InfoManager.Controllers
         [HttpPost("processdelete")]
         public async Task<ActionResult<ResponseResultModel<Object>>> ProcessDeleteAsync(DeleteForm delete)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
             var res = _context.RoomProcesses.Where(d => d.ID == delete.ID).FirstOrDefault();
             if (res == null)
             {
-                return Fail("病例不存在");
+                return Fail("流程不存在");
             }
             _context.RoomProcesses.Remove(res);
             await _context.SaveChangesAsync();
@@ -334,8 +334,8 @@ namespace InfoManager.Controllers
         [HttpPost("processupdate")]
         public async Task<ActionResult<ResponseResultModel<Object>>> ProcessUpdateAsync(RoomProcess process)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -354,8 +354,8 @@ namespace InfoManager.Controllers
         [HttpPost("processadd")]
         public async Task<ActionResult<ResponseResultModel<Object>>> ProcessAddAsync(ProcessForm process)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -395,15 +395,15 @@ namespace InfoManager.Controllers
         [HttpPost("chargeprojectupdate")]
         public async Task<ActionResult<ResponseResultModel<Object>>> ChargeProjectUpdateAsync(ChargeProject chargeProject)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
             var res = _context.ChargeProjects.Where(d => d.ID == chargeProject.ID).FirstOrDefault();
             if (res == null)
             {
-                return Fail(default(object), "项目不存在");
+                return Fail(default(object), "收费项目不存在");
             }
             res.ProjectName = chargeProject.ProjectName;
             res.ProjectDescription = chargeProject.ProjectDescription;
@@ -414,15 +414,15 @@ namespace InfoManager.Controllers
         [HttpPost("chargeprojectdelete")]
         public async Task<ActionResult<ResponseResultModel<Object>>> ChargeProjectDeleteAsync(DeleteForm delete)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
             var res = _context.ChargeProjects.Where(d => d.ID == delete.ID).FirstOrDefault();
             if (res == null)
             {
-                return Fail("病例不存在");
+                return Fail("收费项目不存在");
             }
             _context.ChargeProjects.Remove(res);
             await _context.SaveChangesAsync();
@@ -431,15 +431,15 @@ namespace InfoManager.Controllers
         [HttpPost("chargeProjectadd")]
         public async Task<ActionResult<ResponseResultModel<Object>>> ChargeProjectAddAsync(ChargeProjectForm charge)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
             var res = _context.ChargeProjects.Where(d => d.ProjectName == charge.ProjectName).FirstOrDefault();
             if (res != null)
             {
-                return Fail("项目已存在");
+                return Fail("收费项目已存在");
             }
             _context.ChargeProjects.Add(new ChargeProject {ProjectCharge = charge.ProjectCharge, ProjectDescription = charge.ProjectDescription, ProjectName = charge.ProjectName });
             await _context.SaveChangesAsync();
@@ -450,7 +450,7 @@ namespace InfoManager.Controllers
         public async Task<ActionResult<ResponseResultModel<SearchResult<ChargeProject>>>> ChargeProjectSearchAsync(int page, int pageSize, string keyWord)
         {
             var result = await AuthCheck<SearchResult<ChargeProject>>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -466,15 +466,15 @@ namespace InfoManager.Controllers
         [HttpPost("docupdate")]
         public async Task<ActionResult<ResponseResultModel<Object>>> DocumentUpdateAsync(Document document)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
             var res = _context.Documents.Where(d => d.ID == document.ID).FirstOrDefault();
             if (res == null)
             {
-                return Fail(default(object), "项目不存在");
+                return Fail(default(object), "档案不存在");
             }
             res.Description = document.Description;
             res.DocumentName = document.DocumentName;
@@ -484,8 +484,8 @@ namespace InfoManager.Controllers
         [HttpPost("docdelete")]
         public async Task<ActionResult<ResponseResultModel<Object>>> DocumentDeleteAsync(DeleteForm delete)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -501,15 +501,15 @@ namespace InfoManager.Controllers
         [HttpPost("docadd")]
         public async Task<ActionResult<ResponseResultModel<Object>>> DocumentAddAsync(DocumentForm document)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
             var res = _context.Documents.Where(d => d.DocumentName == document.DocumentName).FirstOrDefault();
             if (res != null)
             {
-                return Fail("项目已存在");
+                return Fail("档案已存在");
             }
             _context.Documents.Add(new Document { DocumentName = document.DocumentName, Description = document.Description});
             await _context.SaveChangesAsync();
@@ -520,7 +520,7 @@ namespace InfoManager.Controllers
         public async Task<ActionResult<ResponseResultModel<SearchResult<Document>>>> DocumentSearchAsync(int page, int pageSize, string keyWord)
         {
             var result = await AuthCheck<SearchResult<Document>>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -535,8 +535,8 @@ namespace InfoManager.Controllers
         [HttpPost("vaccineupdate")]
         public async Task<ActionResult<ResponseResultModel<Object>>> VaccineUpdateAsync(Vaccine vaccine)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -555,8 +555,8 @@ namespace InfoManager.Controllers
         [HttpPost("vaccinedelete")]
         public async Task<ActionResult<ResponseResultModel<Object>>> VaccineDeleteAsync(DeleteForm delete)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -572,15 +572,15 @@ namespace InfoManager.Controllers
         [HttpPost("vaccineadd")]
         public async Task<ActionResult<ResponseResultModel<Object>>> VaccineAddAsync(Vaccine vaccine)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
             var res = _context.Vaccines.Where(d => d.Name == vaccine.Name).FirstOrDefault();
             if (res != null)
             {
-                return Fail("项目已存在");
+                return Fail("疫苗已存在");
             }
             _context.Vaccines.Add(new Vaccine { Name = vaccine.Name , Video = vaccine.Video, Image = vaccine.Image, Description = vaccine.Description}) ;
             await _context.SaveChangesAsync();
@@ -591,7 +591,7 @@ namespace InfoManager.Controllers
         public async Task<ActionResult<ResponseResultModel<SearchResult<Vaccine>>>> VaccineSearchAsync(int page, int pageSize, string keyWord)
         {
             var result = await AuthCheck<SearchResult<Vaccine>>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -607,15 +607,15 @@ namespace InfoManager.Controllers
         [HttpPost("inspectionupdate")]
         public async Task<ActionResult<ResponseResultModel<Object>>> InspectionUpdateAsync(InspectionProject inspection)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
             var res = _context.InspectionProjects.Where(d => d.ID == inspection.ID).FirstOrDefault();
             if (res == null)
             {
-                return Fail(default(object), "项目不存在");
+                return Fail(default(object), "化验项目不存在");
             }
             res.Description = inspection.Description;
             res.Image = inspection.Image;
@@ -627,15 +627,15 @@ namespace InfoManager.Controllers
         [HttpPost("inspectiondelete")]
         public async Task<ActionResult<ResponseResultModel<Object>>> InspectionDeleteAsync(DeleteForm delete)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
             var res = _context.InspectionProjects.Where(d => d.ID == delete.ID).FirstOrDefault();
             if (res == null)
             {
-                return Fail("项目不存在");
+                return Fail("化验项目不存在");
             }
             _context.InspectionProjects.Remove(res);
             await _context.SaveChangesAsync();
@@ -644,15 +644,15 @@ namespace InfoManager.Controllers
         [HttpPost("inspectionadd")]
         public async Task<ActionResult<ResponseResultModel<Object>>> InspectionAddAsync(InspectionForm inspection)
         {
-            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            var result = await AdminCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
             var res = _context.InspectionProjects.Where(d => d.Name == inspection.Name).FirstOrDefault();
             if (res != null)
             {
-                return Fail("项目已存在");
+                return Fail("化验项目已存在");
             }
             _context.InspectionProjects.Add(new InspectionProject { Name = inspection.Name, Video = inspection.Video, Image = inspection.Image, Description = inspection.Description });
             await _context.SaveChangesAsync();
@@ -663,7 +663,7 @@ namespace InfoManager.Controllers
         public async Task<ActionResult<ResponseResultModel<SearchResult<InspectionProject>>>> InspectionSearchAsync(int page, int pageSize, string keyWord)
         {
             var result = await AuthCheck<SearchResult<InspectionProject>>(_accessor.HttpContext.Request.Cookies);
-            if (result.State == ResponseResultEnum.Fail)
+            if (result.State == ResponseResultEnum.Unauthorized)
             {
                 return result;
             }
@@ -680,7 +680,7 @@ namespace InfoManager.Controllers
 
             if (cookies.Count() == 0)
             {
-                return Fail(default(T), "无权查询");
+                return ResponseResult.Unauthorized(default(T), "无权查询");
             }
             var cookie = cookies.First();
             var cookieString = cookie.Key + "=" + cookie.Value;
@@ -695,8 +695,33 @@ namespace InfoManager.Controllers
             var res =  await response.Content.ReadFromJsonAsync<ResponseResultModel<AuthCheckResponse>>();
             if (!res.Data.Message)
             {
-                return Fail(default(T), "无权查询");
+                return ResponseResult.Unauthorized(default(T), "无权查询");
             }   
+            return Success(default(T), "权限验证");
+        }
+        [NonAction]
+        public async Task<ResponseResultModel<T>> AdminCheck<T>(IRequestCookieCollection cookies)
+        {
+
+            if (cookies.Count() == 0)
+            {
+                return ResponseResult.Unauthorized(default(T), "无权查询");
+            }
+            var cookie = cookies.First();
+            var cookieString = cookie.Key + "=" + cookie.Value;
+            var requestMessage = new HttpRequestMessage()
+            {
+                Method = new HttpMethod("GET"),
+                RequestUri = new Uri($"http://pm-app-svc.backend:5000/api/pm/auth/check")
+            };
+            requestMessage.Headers.Add("cookie", cookieString);
+            var response = await Http.SendAsync(requestMessage);
+            System.Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+            var res = await response.Content.ReadFromJsonAsync<ResponseResultModel<AuthCheckResponse>>();
+            if (!res.Data.Message || int.Parse(res.Data.Authorization) < 1)
+            {
+                return ResponseResult.Unauthorized(default(T), "无权查询");
+            }
             return Success(default(T), "权限验证");
         }
 

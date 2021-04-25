@@ -115,8 +115,8 @@ namespace InfoManager.Controllers
                 return result;
             }
             var key = keyword ?? "";
-            var number = _context.Drugs.Where(x => x.DrugName.StartsWith(key)).Count();
-            var drugs = _context.Drugs.Where(x => x.DrugName.StartsWith(key)).Select(x => x).Take(page * pageSize).Skip((page - 1) * pageSize).ToList();
+            var number = _context.Drugs.Where(x => x.DrugName.Contains(key)).Count();
+            var drugs = _context.Drugs.Where(x => x.DrugName.Contains(key)).Select(x => x).Take(page * pageSize).Skip((page - 1) * pageSize).ToList();
             var res = new SearchResult<Drug> { Records = drugs, Count = number };
             return Success(res, "查询成功");
         }
@@ -456,7 +456,7 @@ namespace InfoManager.Controllers
             }
             var key = keyWord ?? "";
             var number = _context.ChargeProjects.Where(x => x.ProjectName.Contains(key)).Count();
-            var chargeProjects = _context.ChargeProjects.Where(x => x.ProjectName.StartsWith(key)).Select(x => x).Take(page * pageSize).Skip((page - 1) * pageSize).ToList();
+            var chargeProjects = _context.ChargeProjects.Where(x => x.ProjectName.Contains(key)).Select(x => x).Take(page * pageSize).Skip((page - 1) * pageSize).ToList();
             var res = new SearchResult<ChargeProject> { Records = chargeProjects, Count = number };
             return Success(res, "查询成功");
         }

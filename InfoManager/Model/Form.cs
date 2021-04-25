@@ -41,13 +41,33 @@ namespace InfoManager.Model
         public string Description { get; set; }
         public string Image { get; set; }
         public string Video { get; set; }
-        public string CaseType { get; set; }
     }
     public class ChargeProjectForm
     {
         public string ProjectName { get; set; }
         public string ProjectDescription { get; set; }
         public int ProjectCharge { get; set; }
+    }
+    public class DocumentForm
+    {
+
+        public string DocumentName { get; set; }
+
+        public string Description { get; set; }
+    }
+    public class VaccineForm
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Image { get; set; }
+        public string Video { get; set; }
+    }
+    public class InspectionForm
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Image { get; set; }
+        public string Video { get; set; }
     }
     public class AuthCheckResponse
     {

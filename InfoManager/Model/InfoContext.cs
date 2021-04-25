@@ -16,6 +16,9 @@ namespace InfoManager.Model
         public DbSet<Drug> Drugs { get; set; }
         public DbSet<Case> Cases { get; set; }
         public DbSet<Disease> Diseases { get; set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<Vaccine> Vaccines { get; set; }
+        public DbSet<InspectionProject> InspectionProjects { get; set; }
         public DbSet<ChargeProject> ChargeProjects { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -462,6 +462,218 @@ namespace InfoManager.Controllers
         }
         #endregion
 
+        #region document
+        [HttpPost("docupdate")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> DocumentUpdateAsync(Document document)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.Documents.Where(d => d.ID == document.ID).FirstOrDefault();
+            if (res == null)
+            {
+                return Fail(default(object), "项目不存在");
+            }
+            res.Description = document.Description;
+            res.DocumentName = document.DocumentName;
+            await _context.SaveChangesAsync();
+            return Success("修改成功");
+        }
+        [HttpPost("docdelete")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> DocumentDeleteAsync(DeleteForm delete)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.Documents.Where(d => d.ID == delete.ID).FirstOrDefault();
+            if (res == null)
+            {
+                return Fail("档案不存在");
+            }
+            _context.Documents.Remove(res);
+            await _context.SaveChangesAsync();
+            return Success("删除成功");
+        }
+        [HttpPost("docadd")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> DocumentAddAsync(DocumentForm document)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.Documents.Where(d => d.DocumentName == document.DocumentName).FirstOrDefault();
+            if (res != null)
+            {
+                return Fail("项目已存在");
+            }
+            _context.Documents.Add(new Document { DocumentName = document.DocumentName, Description = document.Description});
+            await _context.SaveChangesAsync();
+            return Success("添加成功");
+        }
+
+        [HttpGet("docsearch")]
+        public async Task<ActionResult<ResponseResultModel<SearchResult<Document>>>> DocumentSearchAsync(int page, int pageSize, string keyWord)
+        {
+            var result = await AuthCheck<SearchResult<Document>>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var key = keyWord ?? "";
+            var number = _context.Documents.Where(x => x.DocumentName.Contains(key)).Count();
+            var chargeProjects = _context.Documents.Where(x => x.DocumentName.Contains(key)).Select(x => x).Take(page * pageSize).Skip((page - 1) * pageSize).ToList();
+            var res = new SearchResult<Document> { Records = chargeProjects, Count = number };
+            return Success(res, "查询成功");
+        }
+        #endregion
+        #region vaccine
+        [HttpPost("vaccineupdate")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> VaccineUpdateAsync(Vaccine vaccine)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.Vaccines.Where(d => d.ID == vaccine.ID).FirstOrDefault();
+            if (res == null)
+            {
+                return Fail(default(object), "疫苗不存在");
+            }
+            res.Description = vaccine.Description;
+            res.Image = vaccine.Image;
+            res.Name = vaccine.Name;
+            res.Video = vaccine.Video;
+            await _context.SaveChangesAsync();
+            return Success("修改成功");
+        }
+        [HttpPost("vaccinedelete")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> VaccineDeleteAsync(DeleteForm delete)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.Vaccines.Where(d => d.ID == delete.ID).FirstOrDefault();
+            if (res == null)
+            {
+                return Fail("疫苗不存在");
+            }
+            _context.Vaccines.Remove(res);
+            await _context.SaveChangesAsync();
+            return Success("删除成功");
+        }
+        [HttpPost("vaccineadd")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> VaccineAddAsync(Vaccine vaccine)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.Vaccines.Where(d => d.Name == vaccine.Name).FirstOrDefault();
+            if (res != null)
+            {
+                return Fail("项目已存在");
+            }
+            _context.Vaccines.Add(new Vaccine { Name = vaccine.Name , Video = vaccine.Video, Image = vaccine.Image, Description = vaccine.Description}) ;
+            await _context.SaveChangesAsync();
+            return Success("添加成功");
+        }
+
+        [HttpGet("vaccinesearch")]
+        public async Task<ActionResult<ResponseResultModel<SearchResult<Vaccine>>>> VaccineSearchAsync(int page, int pageSize, string keyWord)
+        {
+            var result = await AuthCheck<SearchResult<Vaccine>>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var key = keyWord ?? "";
+            var number = _context.Vaccines.Where(x => x.Name.Contains(key)).Count();
+            var chargeProjects = _context.Vaccines.Where(x => x.Name.Contains(key)).Select(x => x).Take(page * pageSize).Skip((page - 1) * pageSize).ToList();
+            var res = new SearchResult<Vaccine> { Records = chargeProjects, Count = number };
+            return Success(res, "查询成功");
+        }
+        #endregion
+
+        #region inspectionproject
+        [HttpPost("inspectionupdate")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> InspectionUpdateAsync(InspectionProject inspection)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.InspectionProjects.Where(d => d.ID == inspection.ID).FirstOrDefault();
+            if (res == null)
+            {
+                return Fail(default(object), "项目不存在");
+            }
+            res.Description = inspection.Description;
+            res.Image = inspection.Image;
+            res.Name = inspection.Name;
+            res.Video = inspection.Video;
+            await _context.SaveChangesAsync();
+            return Success("修改成功");
+        }
+        [HttpPost("inspectiondelete")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> InspectionDeleteAsync(DeleteForm delete)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.InspectionProjects.Where(d => d.ID == delete.ID).FirstOrDefault();
+            if (res == null)
+            {
+                return Fail("项目不存在");
+            }
+            _context.InspectionProjects.Remove(res);
+            await _context.SaveChangesAsync();
+            return Success("删除成功");
+        }
+        [HttpPost("inspectionadd")]
+        public async Task<ActionResult<ResponseResultModel<Object>>> InspectionAddAsync(InspectionForm inspection)
+        {
+            var result = await AuthCheck<Object>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var res = _context.InspectionProjects.Where(d => d.Name == inspection.Name).FirstOrDefault();
+            if (res != null)
+            {
+                return Fail("项目已存在");
+            }
+            _context.InspectionProjects.Add(new InspectionProject { Name = inspection.Name, Video = inspection.Video, Image = inspection.Image, Description = inspection.Description });
+            await _context.SaveChangesAsync();
+            return Success("添加成功");
+        }
+
+        [HttpGet("inspectionsearch")]
+        public async Task<ActionResult<ResponseResultModel<SearchResult<InspectionProject>>>> InspectionSearchAsync(int page, int pageSize, string keyWord)
+        {
+            var result = await AuthCheck<SearchResult<InspectionProject>>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Fail)
+            {
+                return result;
+            }
+            var key = keyWord ?? "";
+            var number = _context.InspectionProjects.Where(x => x.Name.Contains(key)).Count();
+            var inspections = _context.InspectionProjects.Where(x => x.Name.Contains(key)).Select(x => x).Take(page * pageSize).Skip((page - 1) * pageSize).ToList();
+            var res = new SearchResult<InspectionProject> { Records = inspections, Count = number };
+            return Success(res, "查询成功");
+        }
+        #endregion
         [NonAction]
         public async Task<ResponseResultModel<T>> AuthCheck<T>(IRequestCookieCollection cookies)
         {

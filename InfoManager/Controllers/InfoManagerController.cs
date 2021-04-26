@@ -312,7 +312,17 @@ namespace InfoManager.Controllers
             }
             return Success(roomProcess, "查询成功");
         }
-
+        [HttpGet("processall")]
+        public async Task<ActionResult<ResponseResultModel<List<RoomProcess>>>> ProcessAllGet()
+        {
+            var result = await AdminCheck<List<RoomProcess>>(_accessor.HttpContext.Request.Cookies);
+            if (result.State == ResponseResultEnum.Unauthorized)
+            {
+                return result;
+            }
+            var roomProcess = _context.RoomProcesses.Select(x => x).ToList();
+            return Success(roomProcess, "查询成功");
+        }
         [HttpPost("processdelete")]
         public async Task<ActionResult<ResponseResultModel<Object>>> ProcessDeleteAsync(DeleteForm delete)
         {

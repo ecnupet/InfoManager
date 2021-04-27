@@ -372,7 +372,7 @@ namespace InfoManager.Controllers
             var processes = process.Route.Split(";", StringSplitOptions.RemoveEmptyEntries);
             if (processes.Count() == 0)
             {
-                _context.RoomProcesses.Add(new RoomProcess { FatherID = 0, Image = process.Image, Name = process.Name, Process = process.Process, Video = process.Video });
+                _context.RoomProcesses.Add(new RoomProcess { FatherId = 0, Image = process.Image, Name = process.Name, Process = process.Process, Video = process.Video });
                 return Success("添加成功");
             }
             int fatherID = 0;
@@ -380,7 +380,7 @@ namespace InfoManager.Controllers
             foreach (var i in processes)
             {
 
-                roomProcess = _context.RoomProcesses.Where(rp => rp.Name == i && rp.FatherID == fatherID).FirstOrDefault();
+                roomProcess = _context.RoomProcesses.Where(rp => rp.Name == i && rp.FatherId == fatherID).FirstOrDefault();
                 if (roomProcess == null)
                 {
                     return Fail("流程路径不合法");
@@ -388,13 +388,13 @@ namespace InfoManager.Controllers
                 fatherID = roomProcess.ID;
             }
 
-            var checkProcess = _context.RoomProcesses.Where(rp => rp.FatherID == fatherID && rp.Name == process.Name);
+            var checkProcess = _context.RoomProcesses.Where(rp => rp.FatherId == fatherID && rp.Name == process.Name);
             if (checkProcess.Count() != 0)
             {
                 return Fail("流程已存在");
             }
             
-            _context.RoomProcesses.Add(new RoomProcess{Name = process.Name, Process = process.Process, FatherID = fatherID, Video = process.Video, Image = process.Image });
+            _context.RoomProcesses.Add(new RoomProcess{Name = process.Name, Process = process.Process, FatherId = fatherID, Video = process.Video, Image = process.Image });
             await _context.SaveChangesAsync();
             return Success("添加成功");
         }

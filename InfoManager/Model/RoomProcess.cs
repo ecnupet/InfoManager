@@ -18,7 +18,7 @@ namespace InfoManager.Model
         [Column("process")]
         public string Process { get; set; }
         [Column("father_id")]
-        public int FatherID { get; set; }
+        public int FatherId { get; set; }
         [Column("video")]
         public string Video { get; set; }
         [Column("image")]

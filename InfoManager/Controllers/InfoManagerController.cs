@@ -304,6 +304,13 @@ namespace InfoManager.Controllers
                 {
                     fatherID = _context.RoomProcesses.Where(rp => rp.Name == i).Select(rp => rp.ID).FirstOrDefault();
                     roomProcess = _context.RoomProcesses.Where(rp => rp.Name == i).FirstOrDefault();
+
+                }
+                else
+                {
+
+                    roomProcess = _context.RoomProcesses.Where(rp => rp.Name == i && rp.FatherId == fatherID).FirstOrDefault();
+                    fatherID = _context.RoomProcesses.Where(rp => rp.Name == i && rp.FatherId == fatherID).Select(rp => rp.ID).FirstOrDefault();
                 }
             }
             if(roomProcess == null)
